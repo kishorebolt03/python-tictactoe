@@ -1,9 +1,9 @@
 import socket
 import pickle
 
-s= socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-host="127.0.0.1"
-port = 5002
+s= socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+host=socket.gethostname()
+port = 8080
 s.connect((host,port))
 
 choices =[]
@@ -11,7 +11,9 @@ for x in range (0, 9) :
     choices.append(str(x + 1))
 
 print("connected to the server")
-
+message =s.recv(1024)
+message = message.decode()
+print("Server : ",message)
 
 def printBoard() :
     print( '\n')
@@ -28,7 +30,7 @@ printBoard()
 while 1 :
     
     choice = input(">> ")
-    s.sendto(choice,(host,port))
-    choices = s.recvfrom(1024)
+    s.send(choice.encode())
+    choices = s.recv(1024)
     choices = pickle.loads(choices)
     printBoard()
